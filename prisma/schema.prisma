@@ -14,33 +14,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  senha     String
-  nome      String?
-  createdAt DateTime   @default(now())
-  pets      Pet[]
+model User {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  name       String?
+  createdAt  DateTime     @default(now())
+  pets       Pet[]
 }
 
 model Pet {
-  id          Int           @id @default(autoincrement())
-  nome        String
-  especie     String
-  idade       Int?
-  peso        Float?
-  observacoes String?
-  donoId      Int
-  dono        Usuario       @relation(fields: [donoId], references: [id])
-  agendamentos Agendamento[]
-  createdAt   DateTime      @default(now())
+  id            Int             @id @default(autoincrement())
+  name          String
+  species       String
+  age           Int?
+  weight        Float?
+  notes         String?
+  ownerId       Int
+  owner         User            @relation(fields: [ownerId], references: [id])
+  appointments  Appointment[]
+  createdAt     DateTime        @default(now())
 }
 
-model Agendamento {
+model Appointment {
   id           Int       @id @default(autoincrement())
-  data         DateTime
-  servico      String
-  observacoes  String?
+  date         DateTime
+  service      String
+  notes        String?
   status       String    @default("scheduled")
   petId        Int
   pet          Pet       @relation(fields: [petId], references: [id])
