@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { LoginResponseDto } from './dto/login-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<LoginResponseDto> {
     const user = await this.validateUser(email, password);
 
     const payload = { sub: user.id, email: user.email };

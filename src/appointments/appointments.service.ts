@@ -8,7 +8,6 @@ export class AppointmentsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createAppointmentDto: CreateAppointmentDto) {
-    // Verifica se o pet pertence ao usuário autenticado
     const pet = await this.prisma.pet.findUnique({
       where: { id: createAppointmentDto.petId },
       select: { ownerId: true },
