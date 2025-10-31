@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -18,7 +19,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   findMe(@Request() req) {
     const userId = req.user.id;
