@@ -28,11 +28,15 @@ export class AppointmentsService {
     const where: any = {};
 
     if (filters?.date) {
-      const startOfDay = new Date(filters.date);
-      startOfDay.setHours(0, 0, 0, 0);
+      const inputDate = new Date(filters.date + 'T00:00:00Z');
 
-      const endOfDay = new Date(filters.date);
-      endOfDay.setHours(23, 59, 59, 999);
+      if (isNaN(inputDate.getTime())) {
+        throw new Error('Invalid date format. Use YYYY-MM-DD.');
+      }
+
+      const startOfDay = new Date(inputDate);
+      const endOfDay = new Date(inputDate);
+      endOfDay.setUTCHours(23, 59, 59, 999);
 
       where.date = {
         gte: startOfDay,
@@ -42,8 +46,7 @@ export class AppointmentsService {
 
     if (filters?.service) {
       where.service = {
-        contains: filters.service,
-        mode: 'insensitive',
+        equals: filters.service as any,
       };
     }
 
