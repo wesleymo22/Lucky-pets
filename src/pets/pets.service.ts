@@ -2,12 +2,15 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PetsService {
-   constructor(private prisma: PrismaService) {}
+   constructor(private prisma: PrismaService, private readonly userService: UsersService,) {}
 
   async create(createPetDto: CreatePetDto) {
+    await this.userService.findOne(createPetDto.ownerId);
+
     return this.prisma.pet.create({
       data: {
         ...createPetDto,
