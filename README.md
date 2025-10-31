@@ -79,7 +79,7 @@ PORT=3000
 ⚠️ Importante: Certifique-se de que o banco PostgreSQL está rodando antes de iniciar a aplicação.
 Você pode usar Docker para isso.
 
-🐘 Banco de dados com Docker (opcional)
+## 🐘 Banco de dados com Docker (opcional)
 
 Se quiser rodar o banco via Docker, basta criar um container PostgreSQL:
 
@@ -87,7 +87,7 @@ Se quiser rodar o banco via Docker, basta criar um container PostgreSQL:
 npm run compose:up
 ```
 
-🗃️ Banco de dados e Prisma
+## 🗃️ Banco de dados e Prisma
 
 Após configurar o ambiente, crie o banco e aplique as migrations:
 
@@ -107,14 +107,14 @@ E, se quiser visualizar seus dados de forma interativa:
 npx prisma studio
 ```
 
-### 🧠 Scripts principais
-## Ambiente de desenvolvimento:
+## 🧠 Scripts principais
+### Ambiente de desenvolvimento:
 
 ```bash
 npm run start:dev
 ```
 
-### 📘 Documentação da API
+## 📘 Documentação da API
 
 Após iniciar o servidor, acesse o Swagger em:
 
@@ -122,6 +122,6 @@ Após iniciar o servidor, acesse o Swagger em:
 
 Lá você poderá testar todas as rotas diretamente pelo navegador.
 
-### 🧑‍💻 Autor
+## 🧑‍💻 Autor
 
 Desenvolvido por Wesley
