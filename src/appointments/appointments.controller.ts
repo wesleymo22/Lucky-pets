@@ -10,31 +10,30 @@ export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
-  create(@Body() createAppointmentDto: CreateAppointmentDto, @Request() req) {
-    return this.appointmentsService.create(createAppointmentDto, req.user.userId);
+  create(@Body() createAppointmentDto: CreateAppointmentDto) {
+    return this.appointmentsService.create(createAppointmentDto);
   }
 
   @Get()
-  findAll(
-    @Request() req,  
+  findAll( 
     @Query('date') date?: string,
     @Query('service') service?: string
   ) {
-    return this.appointmentsService.findAll(req.user.userId, { date, service });
+    return this.appointmentsService.findAll({ date, service });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Request() req) {
-    return this.appointmentsService.findOne(+id, req.user.userId);
+  findOne(@Param('id') id: string) {
+    return this.appointmentsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto, @Request() req,) {
-    return this.appointmentsService.update(+id, updateAppointmentDto, req.user.userId);
+  update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto) {
+    return this.appointmentsService.update(+id, updateAppointmentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Request() req) {
-    return this.appointmentsService.remove(+id, req.user.userId);
+  remove(@Param('id') id: string) {
+    return this.appointmentsService.remove(+id);
   }
 }

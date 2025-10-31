@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -7,7 +7,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 export class AppointmentsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createAppointmentDto: CreateAppointmentDto, userId: number) {
+  async create(createAppointmentDto: CreateAppointmentDto) {
     // Verifica se o pet pertence ao usuário autenticado
     const pet = await this.prisma.pet.findUnique({
       where: { id: createAppointmentDto.petId },
@@ -15,8 +15,6 @@ export class AppointmentsService {
     });
 
     if (!pet) throw new NotFoundException('Pet not found');
-    if (pet.ownerId !== userId)
-      throw new ForbiddenException('You do not have permission to create an appointment for this pet');
 
     return this.prisma.appointment.create({
       data: {
@@ -26,44 +24,53 @@ export class AppointmentsService {
     });
   }
 
-  async findAll(userId: number, filters?: { date?: string; service?: string }) {
-    const pets = await this.prisma.pet.findMany({
-      where: { ownerId: userId },
-      select: { id: true },
-    });
+  async findAll(filters?: { date?: string; service?: string }) {
+    const where: any = {};
 
-    const petIds = pets.map((p) => p.id);
+    if (filters?.date) {
+      const startOfDay = new Date(filters.date);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(filters.date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      where.date = {
+        gte: startOfDay,
+        lte: endOfDay,
+      };
+    }
+
+    if (filters?.service) {
+      where.service = {
+        contains: filters.service,
+        mode: 'insensitive',
+      };
+    }
 
     return this.prisma.appointment.findMany({
-      where: {
-        petId: { in: petIds },
-        ...(filters?.date && {
-          date: {
-            gte: new Date(filters.date),
-            lt: new Date(new Date(filters.date).setDate(new Date(filters.date).getDate() + 1)),
-          },
-        }),
+      where,
+      include: {
+        pet: {
+          select: { id: true, name: true, species: true },
+        },
       },
-      include: { pet: true },
       orderBy: { date: 'asc' },
     });
   }
 
-  async findOne(id: number, userId: number) {
+  async findOne(id: number) {
     const appointment = await this.prisma.appointment.findUnique({
       where: { id },
       include: { pet: true },
     });
 
     if (!appointment) throw new NotFoundException('Appointment not found');
-    if (appointment.pet.ownerId !== userId)
-      throw new ForbiddenException('You do not have access to this appointment');
 
     return appointment;
   }
 
-  async update(id: number, updateAppointmentDto: UpdateAppointmentDto, userId: number) {
-    await this.findOne(id, userId);
+  async update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+    await this.findOne(id);
     return this.prisma.appointment.update({
       where: { id },
       data: {
@@ -73,8 +80,8 @@ export class AppointmentsService {
     });
   }
 
-  async remove(id: number, userId: number) {
-    await this.findOne(id, userId);
+  async remove(id: number) {
+    await this.findOne(id);
     return this.prisma.appointment.delete({ where: { id } });
   }
 }

@@ -1,11 +1,13 @@
-import { IsDateString, IsInt, IsOptional, IsString } from "class-validator";
+import { ServiceType } from "@prisma/client";
+import { IsDateString, IsEnum, IsInt, IsOptional, IsString } from "class-validator";
 
 export class CreateAppointmentDto {
   @IsDateString()
   date: string;
 
   @IsString()
-  service: string;
+  @IsEnum(ServiceType)
+  service: ServiceType;
 
   @IsOptional()
   @IsString()

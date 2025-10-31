@@ -14,7 +14,7 @@ CREATE TABLE `User` (
 CREATE TABLE `Pet` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `species` VARCHAR(191) NOT NULL,
+    `species` ENUM('CACHORRO', 'GATO', 'OUTROS') NOT NULL,
     `age` INTEGER NULL,
     `weight` DOUBLE NULL,
     `notes` VARCHAR(191) NULL,
@@ -28,7 +28,7 @@ CREATE TABLE `Pet` (
 CREATE TABLE `Appointment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `date` DATETIME(3) NOT NULL,
-    `service` VARCHAR(191) NOT NULL,
+    `service` ENUM('BANHO', 'TOSA', 'CONSULTA_GERAL', 'VACINACAO', 'OUTROS') NOT NULL,
     `notes` VARCHAR(191) NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'scheduled',
     `petId` INTEGER NOT NULL,
