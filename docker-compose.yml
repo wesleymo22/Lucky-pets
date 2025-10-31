@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   db:
     image: mysql:8.0
@@ -13,6 +14,34 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - pets-network
+
+  api:
+    container_name: lucky-pets-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mysql://prisma:prisma@db:3306/petsdb"
+      JWT_SECRET: "supersecretjwt"
+      PORT: 3000
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             npx prisma generate &&
+             npm run start:dev"
+    networks:
+      - pets-network
 
 volumes:
   mysql_data:
+
+networks:
+  pets-network:
+    driver: bridge

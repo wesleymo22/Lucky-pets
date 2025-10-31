@@ -79,38 +79,69 @@ PORT=3000
 ⚠️ Importante: Certifique-se de que o banco PostgreSQL está rodando antes de iniciar a aplicação.
 Você pode usar Docker para isso.
 
-## 🐘 Banco de dados com Docker (opcional)
+## 🐳 Subindo o ambiente com Docker
 
-Se quiser rodar o banco via Docker, basta criar um container PostgreSQL:
+O projeto possui um docker-compose.yml que sobe toda a stack automaticamente:
 
 ```bash
-npm run compose:up
+docker-compose up --build -d
+
 ```
 
-## 🗃️ Banco de dados e Prisma
+Isso irá:
 
-Após configurar o ambiente, crie o banco e aplique as migrations:
+Criar e iniciar o container PostgreSQL
+
+Criar e iniciar o container da API NestJS
+
+Executar automaticamente as migrations e os seeds no primeiro start
+
+Após a inicialização, a API estará disponível em:
+
+👉 http://localhost:3000
+
+E o Swagger pode ser acessado em:
+
+👉 http://localhost:3000/api/docs
+
+## 🐘 Subir apenas o banco de dados com Docker
+
+Se desejar subir somente o banco de dados (sem iniciar a aplicação NestJS), você pode usar o comando abaixo:
 
 ```bash
+docker compose up db -d
+```
+
+Isso irá:
+
+Criar e iniciar apenas o container MySQL
+
+Disponibilizar o banco em localhost:3306
+
+Manter o volume persistente mysql_data para não perder dados ao reiniciar
+
+O banco estará acessível com as credenciais definidas no docker-compose.yml:
+
+Host: localhost
+Porta: 3306
+Usuário: prisma
+Senha: prisma
+Banco: petsdb
+
+Após o container estar rodando, você pode conectar-se ao banco usando:
+
+O Prisma, executando npx prisma migrate dev
+
+Ou qualquer cliente MySQL, como DBeaver, TablePlus ou MySQL Workbench
+
+## 🧠 Scripts úteis (modo local)
+
+Caso deseje rodar sem Docker:
+
+```bash
+npm install
 npx prisma migrate dev
-```
-
-Popule o banco com os seeds automáticos:
-
-```bash
 npx prisma db seed
-```
-
-E, se quiser visualizar seus dados de forma interativa:
-
-```bash
-npx prisma studio
-```
-
-## 🧠 Scripts principais
-### Ambiente de desenvolvimento:
-
-```bash
 npm run start:dev
 ```
 
